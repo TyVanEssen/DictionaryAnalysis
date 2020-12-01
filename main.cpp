@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include "BST.h"
+#include <sstream>
 
 using namespace std;
 
@@ -8,13 +10,20 @@ int main(int argc, char* argv[]){
 
     if (!inFile.is_open()){
         cout << "[ ! ] File is not open" << endl;
-        exit;
+        return 0;
     }
 
-    int lines = 0;
+    
+    BST myBST;
+    int lines = 1000;
     string tmp;
-    while(getline(inFile, tmp)){
-        lines++;
+    while(getline(inFile, tmp)){// && lines >= 0){
+        lines--;
+        stringstream ss(tmp);
+        tmp = "";
+        ss >> tmp;
+        myBST.addWordNode(tmp);
     }
-    cout << "Lines = " << lines << endl;
+
+    myBST.printInOrderBST();
 }

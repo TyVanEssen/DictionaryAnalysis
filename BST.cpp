@@ -11,17 +11,15 @@ BST::BST(){
     totalWords = 0;
 }
 
-int BST::addWordNode(string word){ //iteratively
-    int operations = 0;
+void BST::addWordNode(string word){ //iteratively
     totalWords++;
-    BSTNode *result = searchBST(word, operations); // its either the parent of something to add or it is the right one.
+    BSTNode *result = searchBST(word); // its either the parent of something to add or it is the right one.
     //returns null if the list is empty
 
     if (result == nullptr) {
         root = new BSTNode{word, nullptr, nullptr, nullptr};
         root->count+=1;
     } else if (result->word == word){
-        operations += 1;
         result->count += 1;
     } else {
         BSTNode *newNode = new BSTNode{word, result, nullptr, nullptr};
@@ -32,23 +30,17 @@ int BST::addWordNode(string word){ //iteratively
             result->rightChild = newNode;
         }
     }
-
-    return operations;
 }
 
-BSTNode* BST::searchBST(std::string word, int &opCounter) {
+BSTNode* BST::searchBST(std::string word) {
     BSTNode *tmp = root;
     BSTNode *parent = nullptr;
-
-    opCounter += 1;
     while (tmp != nullptr) {
 
         parent = tmp;
         if (word < tmp->word) {
-            opCounter += 1;
             tmp = tmp->leftChild;
         } else if (word > tmp->word) {
-            opCounter += 2;
             tmp = tmp->rightChild;
         } else {
             return tmp;
@@ -75,8 +67,7 @@ void BST::printIOBST(BSTNode * node) {
 }
 
 void BST::printWord(string word){
-    int opers = 0;
-    BSTNode *foundWord = searchBST(word, opers);
+    BSTNode *foundWord = searchBST(word);
     if (foundWord->word != word) {
         cout << "[ ! ] Node not found, this would be the parent:\n";
     }
@@ -89,53 +80,17 @@ void BST::printWord(string word){
 
 int BST::countBSTNodes(){
     int num = 0;
-    countBSTNodes(root, &num);
+    countBSTNodes(root);
     return num;
 }
 
-void BST::countBSTNodes(BSTNode *node, int *count){
+void BST::countBSTNodes(BSTNode *node){
     if (node == nullptr) {
         return;
     } else {
-        countBSTNodes(node->leftChild, count);
-        (*count)++;
-        countBSTNodes(node->rightChild, count);
+        countBSTNodes(node->leftChild);
+        countBSTNodes(node->rightChild);
     }
-}
-
-void BST::findAlphaRange(string word1, string word2){ //..<---- ASK HOW TO DO THIS REASONABLY???
-    //fix any ordering
-    string first, last;
-    if (word1 < word2) {
-        first = word1;
-        last = word2;
-    } else {
-        first = word2;
-        last = word1;
-    }
-    int counter = 0;
-    
-    if (searchBST(first, counter)->word != first || searchBST(last, counter)->word != last){
-        cout << "One of the provided words is not in the bst \n";
-    } else {
-        //do it recursively
-        printAplhaRangeHelper(root, first, last);
-    }
-    cout << endl;
-}
-void BST::printAplhaRangeHelper(BSTNode *node, string first, string last) {
-    if (node != nullptr) {
-        // if the current node is in range, recurse
-        if (node->word >= first && node->word <= last) {
-            printAplhaRangeHelper(node->leftChild, first, last);
-            cout << node->word << ", ";
-            printAplhaRangeHelper(node->rightChild, first, last);
-        } else if (node->word < first) {  // if the node is small go right
-            printAplhaRangeHelper(node->rightChild, first, last);
-        } else if (node->word > last) {
-            printAplhaRangeHelper(node->leftChild, first, last);
-        }
-    } 
 }
  
 int BST::countTotalWords(){

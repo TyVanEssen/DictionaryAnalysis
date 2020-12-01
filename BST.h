@@ -1,9 +1,3 @@
-//
-//  BST.h
-//  Assignment-6    
-//  CSCI 2275
-//
-
 #ifndef BST_H
 #define BST_H
 
@@ -36,16 +30,14 @@ public:
     void printWord(std::string word);
     void printInOrderBST();
     int countBSTNodes();
-    int addWordNode(std::string word);
-    void findAlphaRange(std::string word1, std::string word2); //print the words in the tree between word1 and word2
+    void addWordNode(std::string word);
     int countTotalWords();
 protected:
     
 private:
     void printIOBST(BSTNode * node);
-    void countBSTNodes(BSTNode *node, int *c);
-    void printAplhaRangeHelper(BSTNode *node, std::string first, std::string last);
-    BSTNode* searchBST(std::string word, int &opCounter); //use this function to find pointer to node in BST
+    void countBSTNodes(BSTNode *node);
+    BSTNode* searchBST(std::string word); //use this function to find pointer to node in BST
     BSTNode* root;
     int totalWords;
 };

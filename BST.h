@@ -25,7 +25,6 @@ class BST
 {
     
 public:
-    //see the writeup for more detail
     BST();
     void printWord(std::string word);
     void printInOrderBST();

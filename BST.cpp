@@ -15,7 +15,7 @@ void BST::addWordNode(string word){ //iteratively
     totalWords++;
     BSTNode *result = searchBST(word); // its either the parent of something to add or it is the right one.
     //returns null if the list is empty
-
+    cout << "Adding node: " << word << endl;
     if (result == nullptr) {
         root = new BSTNode{word, nullptr, nullptr, nullptr};
         root->count+=1;

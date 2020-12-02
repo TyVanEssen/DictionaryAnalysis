@@ -5,6 +5,7 @@
 
 struct BSTNode{
     std::string word;
+    std::string color;
     int count;
     BSTNode* parent;
     BSTNode* leftChild;
@@ -12,11 +13,12 @@ struct BSTNode{
     
     BSTNode(std::string in_word, BSTNode *p, BSTNode *lc, BSTNode *rc)
     {
-        word = in_word;
+        word = (in_word != "")? in_word: nullptr;
         count = 0;
         parent = p;
         leftChild = lc;
         rightChild = rc;
+        color = "black";
     };
 };
 
@@ -29,8 +31,11 @@ public:
     void printWord(std::string word);
     void printInOrderBST();
     int countBSTNodes();
-    void addWordNode(std::string word);
+    BSTNode* addWordNode(std::string word);
     int countTotalWords();
+    void leftRotate(BSTNode *node);
+    void rightRotate(BSTNode *node);
+    void insert(std::string word);
 protected:
     
 private:

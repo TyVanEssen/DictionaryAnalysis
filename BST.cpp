@@ -11,16 +11,22 @@ BST::BST(){
     totalWords = 0;
 }
 
-void BST::addWordNode(string word){ //iteratively
+/*
+    Returns a pointer to the value added or nullPtr if the value was already found and only needed updating
+*/
+BSTNode* BST::addWordNode(string word){ //iteratively
     totalWords++;
     BSTNode *result = searchBST(word); // its either the parent of something to add or it is the right one.
     //returns null if the list is empty
+    BSTNode *toReturn = nullptr;
     cout << "Adding node: " << word << endl;
     if (result == nullptr) {
         root = new BSTNode{word, nullptr, nullptr, nullptr};
         root->count+=1;
+        toReturn = root;
     } else if (result->word == word){
         result->count += 1;
+        //dont update to ret since it's at its no change value by default
     } else {
         BSTNode *newNode = new BSTNode{word, result, nullptr, nullptr};
         newNode->count += 1;
@@ -29,7 +35,10 @@ void BST::addWordNode(string word){ //iteratively
         } else {
             result->rightChild = newNode;
         }
+        toReturn = newNode;
     }
+
+    return toReturn;
 }
 
 BSTNode* BST::searchBST(std::string word) {

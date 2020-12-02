@@ -15,9 +15,9 @@ int main(int argc, char* argv[]){
 
     
     BST myBST;
-    int lines = 1000;
+    int lines = 50;
     string tmp;
-    while(getline(inFile, tmp)){// && lines >= 0){
+    while(getline(inFile, tmp) && lines >= 0){
         lines--;
         stringstream ss(tmp);
         tmp = "";
@@ -26,4 +26,5 @@ int main(int argc, char* argv[]){
     }
 
     myBST.printInOrderBST();
+    myBST.printWord("abactinally");
 }

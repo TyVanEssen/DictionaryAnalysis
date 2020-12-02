@@ -13,7 +13,7 @@ struct BSTNode{
     
     BSTNode(std::string in_word, BSTNode *p, BSTNode *lc, BSTNode *rc)
     {
-        word = (in_word != "")? in_word: nullptr;
+        word = in_word;
         count = 0;
         parent = p;
         leftChild = lc;

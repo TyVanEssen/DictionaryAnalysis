@@ -82,7 +82,7 @@ First, identify the "uncle" node in the tree
 3) New node is a left child and uncle is black
 
 Algorithm for handling these cases
-
+   
 RBInsert(value):
     node *x = insert(value) //regular BST insert
     while(x!=root && x->parent->color == red):

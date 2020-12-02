@@ -7,7 +7,7 @@ Ty VanEssen 20-10-2020
 using namespace std;
 
 BST::BST(){
-    root = nullptr;
+    root = new BSTNode{"", nullptr, nullptr, nullptr}; //root is a nullNode
     totalWords = 0;
 }
 
@@ -16,37 +16,37 @@ BST::BST(){
 */
 BSTNode* BST::addWordNode(string word){ //iteratively
     totalWords++;
-    BSTNode *result = searchBST(word); // its either the parent of something to add or it is the right one.
+    BSTNode *result = searchBST(word); // returns the node we need. 
     //returns null if the list is empty
     BSTNode *toReturn = nullptr;
     cout << "Adding node: " << word << endl;
-    if (result == nullptr) {
-        root = new BSTNode{word, nullptr, nullptr, nullptr};
-        root->count+=1;
-        toReturn = root;
-    } else if (result->word == word){
+    if (result->word == word){
         result->count += 1;
         //dont update to ret since it's at its no change value by default
     } else {
-        BSTNode *newNode = new BSTNode{word, result, nullptr, nullptr};
-        newNode->count += 1;
-        if (word < result->word) {
-            result->leftChild = newNode;
-        } else {
-            result->rightChild = newNode;
-        }
-        toReturn = newNode;
+        //no need to set root since (after the constructor runs) it should already be this empty node
+
+        result->word = word;
+        result->count += 1;
+        //make new nullnodes
+        BSTNode *leftNullNode = new BSTNode{"", result, nullptr, nullptr};
+        BSTNode *rightNullNode = new BSTNode{"", result, nullptr, nullptr};
+
+        result -> leftChild = leftNullNode;
+        result -> rightChild = rightNullNode;
+
+        toReturn = result;
     }
 
     return toReturn;
 }
 
+/*
+    returns a pointer to where the node should go
+*/
 BSTNode* BST::searchBST(std::string word) {
     BSTNode *tmp = root;
-    BSTNode *parent = nullptr;
-    while (tmp != nullptr) {
-
-        parent = tmp;
+    while (tmp->word != "") {
         if (word < tmp->word) {
             tmp = tmp->leftChild;
         } else if (word > tmp->word) {
@@ -55,7 +55,7 @@ BSTNode* BST::searchBST(std::string word) {
             return tmp;
         }
     }
-    return parent;
+    return tmp;
 }
 
 void BST::printInOrderBST() {
@@ -69,7 +69,7 @@ void BST::printIOBST(BSTNode * node) {
     if (node->leftChild != nullptr) {
         printIOBST(node->leftChild);
     }
-    cout << node->word << "[" << node->count << "], " << flush;
+    cout << (node->word != ""? node->word: "NullNode") << "[" << node->count << "], " << flush;
     if (node->rightChild != nullptr) {
         printIOBST(node->rightChild);
     }
@@ -83,8 +83,9 @@ void BST::printWord(string word){
     cout << "\tWord: " << foundWord->word << endl;
     cout << "\tCount: " << foundWord->count << endl;
     cout << "\tParent: " << (foundWord->parent?foundWord->parent->word:"NoParent") << endl;
-    cout << "\tLeft Child: " << (foundWord->leftChild?foundWord->leftChild->word:"NoChild") << endl;
-    cout << "\tRight Child: " << (foundWord->rightChild?foundWord->rightChild->word:"NoChild") << endl;
+    cout << "\tLeft Child: " << (foundWord->leftChild->word != "" ?foundWord->leftChild->word:"NullNode") << endl;
+    cout << "\tRight Child: " << (foundWord->rightChild->word != ""?foundWord->rightChild->word:"NullNode") << endl;
+    cout << "\tColor: " << foundWord->color << endl;
 }
 
 int BST::countBSTNodes(){
@@ -105,27 +106,21 @@ void BST::countBSTNodes(BSTNode *node){
 int BST::countTotalWords(){
     return totalWords;
 }
-// int main(){
-//     BST myBST;
-//     myBST.addWordNode("Hi");
-//     myBST.addWordNode("Hi");
-//     myBST.addWordNode("Bye");
-//     myBST.addWordNode("A");
-//     myBST.addWordNode("B");
-//     myBST.addWordNode("C");
-//     myBST.addWordNode("X");
-//     myBST.addWordNode("Y");
-//     myBST.addWordNode("Z");
 
-//     myBST.printInOrderBST();
+/*
+void leftRotate(BSTNode *node){
+    //pull up
+    BSTNode *tmp = node->rightChild;
+    node->rightChild = tmp->rightChild;
 
-    // while (true) {
-    //     string in;
-    //     cout << "What node would you like to inspect?: ";
-    //     cin >> in;
-    //     myBST.printWord(in);
-    // }
+    if (tmp->leftChild->word != ""){
 
-//     myBST.findAlphaRange("B", "X");
-    
-// }
+    }
+}
+void rightRotate(BSTNode *node){
+
+}
+void insert(std::string word){
+
+}
+*/

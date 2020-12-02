@@ -26,5 +26,19 @@ int main(int argc, char* argv[]){
     }
 
     myBST.printInOrderBST();
-    myBST.printWord("abactinally");
+    myBST.printWord("a");
+    myBST.leftRotate("a");
+    myBST.leftRotate("aa");
+    myBST.leftRotate("aaa");
+    myBST.printInOrderBST();
+    cout << "----------\n";
+    myBST.printWord("a");
+    cout << "----------\n";
+    myBST.printWord("aa");
+    cout << "----------\n";
+    myBST.printWord("aaa");
+    cout << "----------\n";
+    myBST.printWord("aah");
+    cout << "----------\n";
+    myBST.printInOrderBST();
 }

@@ -69,7 +69,9 @@ void BST::printIOBST(BSTNode * node) {
     if (node->leftChild != nullptr) {
         printIOBST(node->leftChild);
     }
-    cout << (node->word != ""? node->word: "NullNode") << "[" << node->count << "], " << flush;
+    if (node->word != ""){
+        cout << node->word << "[" << node->count << "], " << flush;
+    }
     if (node->rightChild != nullptr) {
         printIOBST(node->rightChild);
     }
@@ -107,20 +109,35 @@ int BST::countTotalWords(){
     return totalWords;
 }
 
-/*
-void leftRotate(BSTNode *node){
+void BST::leftRotate(BSTNode *node){
     //pull up
     BSTNode *tmp = node->rightChild;
     node->rightChild = tmp->rightChild;
 
     if (tmp->leftChild->word != ""){
-
+        tmp->leftChild->parent = node;
     }
+    tmp->parent = node->parent;
+    if(!node->parent){
+        root = tmp;
+    } else if (node == node->parent->leftChild){
+        node->parent->leftChild = tmp;
+    } else {
+        node->parent->rightChild = tmp;
+    }
+    node->rightChild = tmp->leftChild;
+    tmp->leftChild = node;
+    node->parent = tmp;
 }
-void rightRotate(BSTNode *node){
+
+void BST::leftRotate(string word){
+    leftRotate(searchBST(word));
+}
+/*
+void BST::rightRotate(BSTNode *node){
 
 }
-void insert(std::string word){
+void BST::insert(std::string word){
 
 }
 */

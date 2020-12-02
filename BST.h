@@ -1,7 +1,7 @@
 #ifndef BST_H
 #define BST_H
 
-#include <string>
+#include <iostream>
 
 struct BSTNode{
     std::string word;
@@ -34,6 +34,7 @@ public:
     BSTNode* addWordNode(std::string word);
     int countTotalWords();
     void leftRotate(BSTNode *node);
+    void leftRotate(std::string word);
     void rightRotate(BSTNode *node);
     void insert(std::string word);
 protected:

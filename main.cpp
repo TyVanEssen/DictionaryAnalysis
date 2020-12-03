@@ -23,26 +23,14 @@ int main(int argc, char* argv[]){
         stringstream ss(tmp);
         tmp = "";
         ss >> tmp;
-        myBST.bstAdd(tmp);
+        myBST.insert(tmp);
     }
 
     myBST.printInOrderBST();
-    //myBST.printWord("1");
-    myBST.leftRotate("1");
-    myBST.leftRotate("2");
-    myBST.leftRotate("3");
-    myBST.rightRotate("2");
-    myBST.printInOrderBST();
     cout << "----------\n";
-    myBST.printWord("1");
-    cout << "----------\n";
-    myBST.printWord("2");
-    cout << "----------\n";
-    myBST.printWord("3");
-    cout << "----------\n";
-    myBST.printWord("4");
-    cout << "----------\n";
-    myBST.printWord("5");
-    cout << "----------\n";
+    for (int i = 1; i <= 9; i++){
+        myBST.printWord(to_string(i));
+        cout << "----------\n";
+    }
     myBST.printInOrderBST();
 }

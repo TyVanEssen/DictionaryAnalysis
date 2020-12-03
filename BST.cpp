@@ -27,6 +27,7 @@ BSTNode* BST::bstAdd(string word){ //iteratively
         //no need to set root since (after the constructor runs) it should already be this empty node
 
         result->word = word;
+        result->color = "red";
         result->count += 1;
         //make new nullnodes
         BSTNode *leftNullNode = new BSTNode{"", result, nullptr, nullptr};
@@ -167,6 +168,74 @@ void BST::rightRotate(BSTNode *node){
 }
 /*
 void BST::insert(std::string word){
+    BSTNode * workingNode = bstAdd(word); //regular bst insert
+    while (workingNode != root && workingNode->parent->color == "red"){
+        BSTNode *uncle = workingNode->parent->parent->rightChild;
+        cout << "Inside loop word: " << word <<  endl;
+        if (uncle->color == "red"){
+            workingNode->parent->color = "black";
+            uncle->color = "black";
+            workingNode->parent->parent->color = "red";
+        } else {
+            if (workingNode->parent == workingNode->parent->parent->leftChild){ //left somethings
+                if (workingNode == workingNode->parent->rightChild){ //if we are a right child.. Make us a left child and do again
+                    workingNode = workingNode->parent;
+                    leftRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                rightRotate(workingNode->parent->parent);
+            } else { //right somethings
+                if (workingNode == workingNode->parent->leftChild){ //if we are a left child.. Make us a right child and do again
+                    workingNode = workingNode->parent;
+                    rightRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                leftRotate(workingNode->parent->parent);
+            }
+        }
+        workingNode = workingNode->parent->parent;
+    }
+    root->color = "black";
+}*/
 
+void BST::insert(std::string word){
+    BSTNode * workingNode = bstAdd(word); //regular bst insert
+    while (workingNode != root && workingNode->parent->color == "red"){
+        if (workingNode->parent == workingNode->parent->parent->leftChild){
+            BSTNode *uncle = workingNode->parent->parent->rightChild;
+            if (uncle->color == "red"){
+                workingNode->parent->color = "black";
+                uncle->color = "black";
+                workingNode->parent->parent->color = "red";
+                workingNode = workingNode->parent->parent;
+            } else {
+                if (workingNode == workingNode->parent->rightChild){ //if we are a right child.. Make us a left child and do again
+                    workingNode = workingNode->parent;
+                    leftRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                rightRotate(workingNode->parent->parent);
+            }
+        } else { //we are a right child
+            BSTNode *uncle = workingNode->parent->parent->leftChild;
+            if (uncle->color == "red"){
+                workingNode->parent->color = "black";
+                uncle->color = "black";
+                workingNode->parent->parent->color = "red";
+                workingNode = workingNode->parent->parent;
+            } else {
+                if (workingNode == workingNode->parent->leftChild){ //if we are a left child.. Make us a left child and do again
+                    workingNode = workingNode->parent;
+                    rightRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                leftRotate(workingNode->parent->parent);
+            }
+        }
+    }
+    root->color = "black";
 }
-*/

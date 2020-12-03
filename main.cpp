@@ -6,6 +6,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
+    
     ifstream inFile(argv[1]);
 
     if (!inFile.is_open()){
@@ -26,19 +27,21 @@ int main(int argc, char* argv[]){
     }
 
     myBST.printInOrderBST();
-    myBST.printWord("a");
-    myBST.leftRotate("a");
-    myBST.leftRotate("aa");
-    myBST.leftRotate("aaa");
+    //myBST.printWord("1");
+    myBST.leftRotate("1");
+    myBST.leftRotate("2");
+    myBST.leftRotate("4");
     myBST.printInOrderBST();
     cout << "----------\n";
-    myBST.printWord("a");
+    myBST.printWord("1");
     cout << "----------\n";
-    myBST.printWord("aa");
+    myBST.printWord("2");
     cout << "----------\n";
-    myBST.printWord("aaa");
+    myBST.printWord("3");
     cout << "----------\n";
-    myBST.printWord("aah");
+    myBST.printWord("4");
+    cout << "----------\n";
+    myBST.printWord("5");
     cout << "----------\n";
     myBST.printInOrderBST();
 }

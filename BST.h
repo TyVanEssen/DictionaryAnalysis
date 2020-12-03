@@ -33,8 +33,6 @@ public:
     int countBSTNodes();
     BSTNode* bstAdd(std::string word);
     int countTotalWords();
-    void leftRotate(std::string word);
-    void rightRotate(std::string word);
     void insert(std::string word);
 protected:
     

@@ -123,13 +123,6 @@ void BST::leftRotate(BSTNode *node){
     node->parent = tmp;
 }
 
-void BST::leftRotate(string word){
-    leftRotate(searchBST(word));
-}
-void BST::rightRotate(string word){
-    rightRotate(searchBST(word));
-}
-
 void BST::rightRotate(BSTNode *node){
     //pull up
     BSTNode *tmp = node->leftChild;

@@ -33,6 +33,7 @@ public:
     int countBSTNodes();
     BSTNode* bstAdd(std::string word);
     int countTotalWords();
+    void findAlphaRange(std::string word1, std::string word2);
     void insert(std::string word);
 protected:
     
@@ -41,6 +42,8 @@ private:
     void rightRotate(BSTNode *node);
     void printIOBST(BSTNode * node);
     void countBSTNodes(BSTNode *node);
+    void printAplhaRangeHelper(BSTNode *node, std::string first, std::string last);
+    
     BSTNode* searchBST(std::string word); //use this function to find pointer to node in BST
     BSTNode* root;
     int totalWords;

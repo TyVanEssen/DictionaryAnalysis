@@ -190,3 +190,36 @@ void BST::insert(std::string word){
     }
     root->color = "black";
 }
+void BST::findAlphaRange(string word1, string word2){ //..<---- ASK HOW TO DO THIS REASONABLY???
+    //fix any ordering
+    string first, last;
+    if (word1 < word2) {
+        first = word1;
+        last = word2;
+    } else {
+        first = word2;
+        last = word1;
+    }
+   
+    if (searchBST(first)->word != first || searchBST(last)->word != last){
+        cout << "One of the provided words is not in the bst \n";
+    } else {
+        //do it recursively
+        printAplhaRangeHelper(root, first, last);
+    }
+    cout << endl;
+}
+void BST::printAplhaRangeHelper(BSTNode *node, string first, string last) {
+    if (node != nullptr) {
+        // if the current node is in range, recurse
+        if (node->word >= first && node->word <= last) {
+            printAplhaRangeHelper(node->leftChild, first, last);
+            cout << node->word << ", ";
+            printAplhaRangeHelper(node->rightChild, first, last);
+        } else if (node->word < first) {  // if the node is small go right
+            printAplhaRangeHelper(node->rightChild, first, last);
+        } else if (node->word > last) {
+            printAplhaRangeHelper(node->leftChild, first, last);
+        }
+    } 
+}

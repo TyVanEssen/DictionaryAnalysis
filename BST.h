@@ -46,6 +46,7 @@ private:
     BSTNode* searchBST(std::string word); //use this function to find pointer to node in BST
     BSTNode* root;
     int totalWords;
+    int totalUnique;
 };
 
 #endif // BST_H

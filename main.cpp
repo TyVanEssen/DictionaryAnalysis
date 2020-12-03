@@ -1,8 +1,11 @@
 #include <iostream>
 #include <fstream>
-#include "BST.h"
 #include <sstream>
+#include <vector>
 
+#include <chrono>
+
+#include "BST.h"
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -15,22 +18,46 @@ int main(int argc, char* argv[]){
     }
 
     
-    BST myBST;
-    int lines = 50;
+    BST *rbBST = new BST();
+    BST *bBST = new BST();
+    vector<string> words;
+
     string tmp;
-    while(getline(inFile, tmp) && lines >= 0){
-        lines--;
+    while(getline(inFile, tmp)){
         stringstream ss(tmp);
         tmp = "";
         ss >> tmp;
-        myBST.insert(tmp);
+        words.push_back(tmp);
     }
 
-    myBST.printInOrderBST();
-    cout << "----------\n";
-    for (int i = 1; i <= 9; i++){
-        myBST.printWord(to_string(i));
-        cout << "----------\n";
+    std::chrono::_V2::system_clock::time_point startTime, stopTime;
+    chrono::duration_cast<chrono::microseconds>(stopTime - startTime).count();
+
+    startTime = chrono::high_resolution_clock::now();
+    for (string word : words){
+        bBST->bstAdd(word);
     }
-    myBST.printInOrderBST();
+    stopTime = chrono::high_resolution_clock::now();
+    cout << "MicroSeconds for basic: " << chrono::duration_cast<chrono::microseconds>(stopTime - startTime).count() << endl;
+
+    delete bBST;
+
+    startTime = chrono::high_resolution_clock::now();
+    for (string word : words){
+        rbBST->insert(word);
+    }
+    stopTime = chrono::high_resolution_clock::now();
+    cout << "MicroSeconds for rb: " << chrono::duration_cast<chrono::microseconds>(stopTime - startTime).count() << endl;
+
+    // myBST.printInOrderBST();
+    // cout << "----------\n";
+    // myBST.printWord("a");
+    // cout << "----------\n";
+    // myBST.printWord("aa");
+    // cout << "----------\n";
+    // myBST.printWord("aaa");
+    // cout << "----------\n";
+    // myBST.printWord("aah");
+    // cout << "----------\n";
+    // myBST.printInOrderBST();
 }

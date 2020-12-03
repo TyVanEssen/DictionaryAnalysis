@@ -19,13 +19,11 @@ BSTNode* BST::bstAdd(string word){ //iteratively
     BSTNode *result = searchBST(word); // returns the node we need. 
     //returns null if the list is empty
     BSTNode *toReturn = nullptr;
-    cout << "Adding node: " << word << endl;
     if (result->word == word){
         result->count += 1;
         //dont update to ret since it's at its no change value by default
     } else {
         //no need to set root since (after the constructor runs) it should already be this empty node
-
         result->word = word;
         result->color = "red";
         result->count += 1;
@@ -37,6 +35,7 @@ BSTNode* BST::bstAdd(string word){ //iteratively
         result -> rightChild = rightNullNode;
 
         toReturn = result;
+        totalUnique += 1;
     }
 
     return toReturn;
@@ -92,18 +91,7 @@ void BST::printWord(string word){
 }
 
 int BST::countBSTNodes(){
-    int num = 0;
-    countBSTNodes(root);
-    return num;
-}
-
-void BST::countBSTNodes(BSTNode *node){
-    if (node == nullptr) {
-        return;
-    } else {
-        countBSTNodes(node->leftChild);
-        countBSTNodes(node->rightChild);
-    }
+    return totalUnique;
 }
  
 int BST::countTotalWords(){
@@ -166,42 +154,12 @@ void BST::rightRotate(BSTNode *node){
     tmp->rightChild = node;
     node->parent = tmp;
 }
-/*
-void BST::insert(std::string word){
-    BSTNode * workingNode = bstAdd(word); //regular bst insert
-    while (workingNode != root && workingNode->parent->color == "red"){
-        BSTNode *uncle = workingNode->parent->parent->rightChild;
-        cout << "Inside loop word: " << word <<  endl;
-        if (uncle->color == "red"){
-            workingNode->parent->color = "black";
-            uncle->color = "black";
-            workingNode->parent->parent->color = "red";
-        } else {
-            if (workingNode->parent == workingNode->parent->parent->leftChild){ //left somethings
-                if (workingNode == workingNode->parent->rightChild){ //if we are a right child.. Make us a left child and do again
-                    workingNode = workingNode->parent;
-                    leftRotate(workingNode);
-                }
-                workingNode->parent->color = "black";
-                workingNode->parent->parent->color = "red";
-                rightRotate(workingNode->parent->parent);
-            } else { //right somethings
-                if (workingNode == workingNode->parent->leftChild){ //if we are a left child.. Make us a right child and do again
-                    workingNode = workingNode->parent;
-                    rightRotate(workingNode);
-                }
-                workingNode->parent->color = "black";
-                workingNode->parent->parent->color = "red";
-                leftRotate(workingNode->parent->parent);
-            }
-        }
-        workingNode = workingNode->parent->parent;
-    }
-    root->color = "black";
-}*/
 
 void BST::insert(std::string word){
-    BSTNode * workingNode = bstAdd(word); //regular bst insert
+    BSTNode *workingNode = bstAdd(word); //regular bst insert
+    if (workingNode == nullptr){
+        return;
+    }
     while (workingNode != root && workingNode->parent->color == "red"){
         if (workingNode->parent == workingNode->parent->parent->leftChild){
             BSTNode *uncle = workingNode->parent->parent->rightChild;

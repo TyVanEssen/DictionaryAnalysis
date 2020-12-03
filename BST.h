@@ -31,15 +31,16 @@ public:
     void printWord(std::string word);
     void printInOrderBST();
     int countBSTNodes();
-    BSTNode* addWordNode(std::string word);
+    BSTNode* bstAdd(std::string word);
     int countTotalWords();
-    void leftRotate(BSTNode *node);
     void leftRotate(std::string word);
-    void rightRotate(BSTNode *node);
+    void rightRotate(std::string word);
     void insert(std::string word);
 protected:
     
 private:
+    void leftRotate(BSTNode *node);
+    void rightRotate(BSTNode *node);
     void printIOBST(BSTNode * node);
     void countBSTNodes(BSTNode *node);
     BSTNode* searchBST(std::string word); //use this function to find pointer to node in BST

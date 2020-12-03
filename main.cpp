@@ -23,14 +23,15 @@ int main(int argc, char* argv[]){
         stringstream ss(tmp);
         tmp = "";
         ss >> tmp;
-        myBST.addWordNode(tmp);
+        myBST.bstAdd(tmp);
     }
 
     myBST.printInOrderBST();
     //myBST.printWord("1");
     myBST.leftRotate("1");
     myBST.leftRotate("2");
-    myBST.leftRotate("4");
+    myBST.leftRotate("3");
+    myBST.rightRotate("2");
     myBST.printInOrderBST();
     cout << "----------\n";
     myBST.printWord("1");

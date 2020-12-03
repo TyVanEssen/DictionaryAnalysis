@@ -14,7 +14,7 @@ BST::BST(){
 /*
     Returns a pointer to the value added or nullPtr if the value was already found and only needed updating
 */
-BSTNode* BST::addWordNode(string word){ //iteratively
+BSTNode* BST::bstAdd(string word){ //iteratively
     totalWords++;
     BSTNode *result = searchBST(word); // returns the node we need. 
     //returns null if the list is empty
@@ -112,6 +112,10 @@ int BST::countTotalWords(){
 void BST::leftRotate(BSTNode *node){
     //pull up
     BSTNode *tmp = node->rightChild;
+    if (tmp->word == ""){ //so we don't allow shifting of end nodes
+        cout << "ERROR: tried to shift end node: " << node->word << endl;
+        return;
+    }
     node->rightChild = tmp->rightChild;
 
     if (tmp->leftChild->word != ""){
@@ -133,10 +137,35 @@ void BST::leftRotate(BSTNode *node){
 void BST::leftRotate(string word){
     leftRotate(searchBST(word));
 }
-/*
-void BST::rightRotate(BSTNode *node){
-
+void BST::rightRotate(string word){
+    rightRotate(searchBST(word));
 }
+
+void BST::rightRotate(BSTNode *node){
+    //pull up
+    BSTNode *tmp = node->leftChild;
+    if (tmp->word == ""){ //so we don't allow shifting of end nodes
+        cout << "ERROR: tried to shift end node: " << node->word << endl;
+        return;
+    }
+    node->leftChild = tmp->leftChild;
+
+    if (tmp->rightChild->word != ""){
+        tmp->rightChild->parent = node;
+    }
+    tmp->parent = node->parent;
+    if(!node->parent){
+        root = tmp;
+    } else if (node == node->parent->rightChild){
+        node->parent->rightChild = tmp;
+    } else {
+        node->parent->leftChild = tmp;
+    }
+    node->leftChild = tmp->rightChild;
+    tmp->rightChild = node;
+    node->parent = tmp;
+}
+/*
 void BST::insert(std::string word){
 
 }

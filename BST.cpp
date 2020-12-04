@@ -4,6 +4,9 @@ Ty VanEssen 20-10-2020
 */
 #include <iostream>
 #include "BST.h"
+#include "Queue.h"
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 BST::BST(){
@@ -80,7 +83,8 @@ void BST::printIOBST(BSTNode * node) {
 void BST::printWord(string word){
     BSTNode *foundWord = searchBST(word);
     if (foundWord->word != word) {
-        cout << "[ ! ] Node not found, this would be the parent:\n";
+        cout << "[ ! ] Node: " << word << " not found, this would be the parent:\n";
+        foundWord = foundWord->parent;
     }
     cout << "\tWord: " << foundWord->word << endl;
     cout << "\tCount: " << foundWord->count << endl;
@@ -105,11 +109,10 @@ void BST::leftRotate(BSTNode *node){
         cout << "ERROR: tried to shift end node: " << node->word << endl;
         return;
     }
-    node->rightChild = tmp->rightChild;
-
-    if (tmp->leftChild->word != ""){
-        tmp->leftChild->parent = node;
-    }
+    node->rightChild = tmp->leftChild;
+    tmp->leftChild->parent = node;
+    
+    
     tmp->parent = node->parent;
     if(!node->parent){
         root = tmp;
@@ -118,7 +121,7 @@ void BST::leftRotate(BSTNode *node){
     } else {
         node->parent->rightChild = tmp;
     }
-    node->rightChild = tmp->leftChild;
+
     tmp->leftChild = node;
     node->parent = tmp;
 }
@@ -130,11 +133,9 @@ void BST::rightRotate(BSTNode *node){
         cout << "ERROR: tried to shift end node: " << node->word << endl;
         return;
     }
-    node->leftChild = tmp->leftChild;
+    node->leftChild = tmp->rightChild;
+    tmp->rightChild->parent = node;
 
-    if (tmp->rightChild->word != ""){
-        tmp->rightChild->parent = node;
-    }
     tmp->parent = node->parent;
     if(!node->parent){
         root = tmp;
@@ -143,7 +144,7 @@ void BST::rightRotate(BSTNode *node){
     } else {
         node->parent->leftChild = tmp;
     }
-    node->leftChild = tmp->rightChild;
+
     tmp->rightChild = node;
     node->parent = tmp;
 }
@@ -153,8 +154,10 @@ void BST::insert(std::string word){
     if (workingNode == nullptr){
         return;
     }
+    //cout << endl << "Node: " << word;
     while (workingNode != root && workingNode->parent->color == "red"){
         if (workingNode->parent == workingNode->parent->parent->leftChild){
+            // cout << word << " - left" << endl;
             BSTNode *uncle = workingNode->parent->parent->rightChild;
             if (uncle->color == "red"){
                 workingNode->parent->color = "black";
@@ -171,6 +174,7 @@ void BST::insert(std::string word){
                 rightRotate(workingNode->parent->parent);
             }
         } else { //we are a right child
+            // cout << word << " - right" << endl;
             BSTNode *uncle = workingNode->parent->parent->leftChild;
             if (uncle->color == "red"){
                 workingNode->parent->color = "black";
@@ -190,7 +194,7 @@ void BST::insert(std::string word){
     }
     root->color = "black";
 }
-void BST::findAlphaRange(string word1, string word2){ //..<---- ASK HOW TO DO THIS REASONABLY???
+void BST::findAlphaRange(string word1, string word2){
     //fix any ordering
     string first, last;
     if (word1 < word2) {
@@ -222,4 +226,57 @@ void BST::printAplhaRangeHelper(BSTNode *node, string first, string last) {
             printAplhaRangeHelper(node->leftChild, first, last);
         }
     } 
+}
+
+int BST::getDepth(BSTNode *node){
+    int deep = 0; //root's depth
+    BSTNode *tmp = node;
+    while (tmp->parent != nullptr){
+        tmp = tmp->parent;
+        deep += 1;
+    }
+    return deep;
+}
+
+int BST::getDepth(string word){
+    return getDepth(searchBST(word));
+}
+/*
+To test speed of retrivalf
+*/
+void BST::touchNode(std::string word){
+    searchBST(word);
+}
+
+void BST::prettyPrint(){
+    Queue Q;
+    Q.enQueue(root);
+    // vector<string> v;
+
+    int prevDeep = 0;
+    while (!Q.isEmpty()){
+        BSTNode *tmp = Q.deQueue();
+        int myDeep = getDepth(tmp);
+        if ( myDeep > prevDeep) {
+            cout << endl;
+        } else {
+            cout << (myDeep != 0? " , " :"");
+        }
+        prevDeep = myDeep;
+        cout << tmp->word << ":" << myDeep << (tmp->color == "red"? "R":"B") << tmp->count << "[" << tmp->leftChild->word << "<|>" << tmp->rightChild->word << "^" << (tmp->parent?tmp->parent->word:"NULL") << "]";
+        if (tmp->leftChild->word != ""){
+            Q.enQueue(tmp->leftChild);
+        }
+        if (tmp->rightChild->word != ""){
+            Q.enQueue(tmp->rightChild);
+        }
+        // if (std::count(v.begin(), v.end(), tmp->word)){
+        //     cout << endl << endl;
+        //     cout << "ENDING EARLY 2x " << tmp->word << endl;
+        //     exit(1);
+        // } else {
+        //     v.push_back(tmp->word);
+        // }
+    }
+    cout << endl;
 }

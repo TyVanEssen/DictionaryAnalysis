@@ -7,11 +7,16 @@ Ty VanEssen 20-10-2020
 #include "Queue.h"
 #include <vector>
 #include <algorithm>
+#include <stack>
 using namespace std;
 
 BST::BST(){
     root = new BSTNode{"", nullptr, nullptr, nullptr}; //root is a nullNode
     totalWords = 0;
+}
+
+node* BST::bstInsert(string word){
+    return bstAdd(word)->data;
 }
 
 /*
@@ -22,14 +27,13 @@ BSTNode* BST::bstAdd(string word){ //iteratively
     BSTNode *result = searchBST(word); // returns the node we need. 
     //returns null if the list is empty
     BSTNode *toReturn = nullptr;
-    if (result->word == word){
-        result->count += 1;
+    if (result->data && result->data->word == word){
+        result->data->count += 1;
         //dont update to ret since it's at its no change value by default
     } else {
         //no need to set root since (after the constructor runs) it should already be this empty node
-        result->word = word;
+        result->data = new node{word, 1};
         result->color = "red";
-        result->count += 1;
         //make new nullnodes
         BSTNode *leftNullNode = new BSTNode{"", result, nullptr, nullptr};
         BSTNode *rightNullNode = new BSTNode{"", result, nullptr, nullptr};
@@ -49,10 +53,10 @@ BSTNode* BST::bstAdd(string word){ //iteratively
 */
 BSTNode* BST::searchBST(std::string word) {
     BSTNode *tmp = root;
-    while (tmp->word != "") {
-        if (word < tmp->word) {
+    while (tmp->data != nullptr) {
+        if (word < tmp->data->word) {
             tmp = tmp->leftChild;
-        } else if (word > tmp->word) {
+        } else if (word > tmp->data->word) {
             tmp = tmp->rightChild;
         } else {
             return tmp;
@@ -62,7 +66,7 @@ BSTNode* BST::searchBST(std::string word) {
 }
 
 void BST::printInOrderBST() {
-    cout << "root=" << root->word << "[" << root->count << "] left: " << (root->leftChild? root->leftChild->word : "null") << ", right: " << (root->rightChild? root->rightChild->word : "null") << endl;
+    cout << "root=" << root->data->word << "[" << root->data->count << "] left: " << (root->leftChild->data? root->leftChild->data->word : "null") << ", right: " << (root->rightChild->data? root->rightChild->data->word : "null") << endl;
 
     printIOBST(root);
     cout << endl;
@@ -72,8 +76,8 @@ void BST::printIOBST(BSTNode * node) {
     if (node->leftChild != nullptr) {
         printIOBST(node->leftChild);
     }
-    if (node->word != ""){
-        cout << node->word << "[" << node->count << "], " << flush;
+    if (node->data != nullptr){
+        cout << node->data->word << "[" << node->data->count << "], " << flush;
     }
     if (node->rightChild != nullptr) {
         printIOBST(node->rightChild);
@@ -82,15 +86,15 @@ void BST::printIOBST(BSTNode * node) {
 
 void BST::printWord(string word){
     BSTNode *foundWord = searchBST(word);
-    if (foundWord->word != word) {
+    if (foundWord->data->word != word) {
         cout << "[ ! ] Node: " << word << " not found, this would be the parent:\n";
         foundWord = foundWord->parent;
     }
-    cout << "\tWord: " << foundWord->word << endl;
-    cout << "\tCount: " << foundWord->count << endl;
-    cout << "\tParent: " << (foundWord->parent?foundWord->parent->word:"NoParent") << endl;
-    cout << "\tLeft Child: " << (foundWord->leftChild->word != "" ?foundWord->leftChild->word:"NullNode") << endl;
-    cout << "\tRight Child: " << (foundWord->rightChild->word != ""?foundWord->rightChild->word:"NullNode") << endl;
+    cout << "\tWord: " << foundWord->data->word << endl;
+    cout << "\tCount: " << foundWord->data->count << endl;
+    cout << "\tParent: " << (foundWord->parent?foundWord->parent->data->word:"NoParent") << endl;
+    cout << "\tLeft Child: " << (foundWord->leftChild->data != nullptr ?foundWord->leftChild->data->word:"NullNode") << endl;
+    cout << "\tRight Child: " << (foundWord->rightChild->data != nullptr?foundWord->rightChild->data->word:"NullNode") << endl;
     cout << "\tColor: " << foundWord->color << endl;
 }
 
@@ -105,8 +109,8 @@ int BST::countTotalWords(){
 void BST::leftRotate(BSTNode *node){
     //pull up
     BSTNode *tmp = node->rightChild;
-    if (tmp->word == ""){ //so we don't allow shifting of end nodes
-        cout << "ERROR: tried to shift end node: " << node->word << endl;
+    if (tmp->data == nullptr){ //so we don't allow shifting of end nodes
+        cout << "ERROR: tried to shift end node:" << endl;
         return;
     }
     node->rightChild = tmp->leftChild;
@@ -129,8 +133,8 @@ void BST::leftRotate(BSTNode *node){
 void BST::rightRotate(BSTNode *node){
     //pull up
     BSTNode *tmp = node->leftChild;
-    if (tmp->word == ""){ //so we don't allow shifting of end nodes
-        cout << "ERROR: tried to shift end node: " << node->word << endl;
+    if (tmp->data == nullptr){ //so we don't allow shifting of end nodes
+        cout << "ERROR: tried to shift end node:" << endl;
         return;
     }
     node->leftChild = tmp->rightChild;
@@ -149,11 +153,12 @@ void BST::rightRotate(BSTNode *node){
     node->parent = tmp;
 }
 
-void BST::insert(std::string word){
+node* BST::rbInsert(std::string word){
     BSTNode *workingNode = bstAdd(word); //regular bst insert
     if (workingNode == nullptr){
-        return;
+        return nullptr;
     }
+    node *toRet = workingNode->data;
     //cout << endl << "Node: " << word;
     while (workingNode != root && workingNode->parent->color == "red"){
         if (workingNode->parent == workingNode->parent->parent->leftChild){
@@ -193,6 +198,7 @@ void BST::insert(std::string word){
         }
     }
     root->color = "black";
+    return toRet;
 }
 void BST::findAlphaRange(string word1, string word2){
     //fix any ordering
@@ -205,7 +211,7 @@ void BST::findAlphaRange(string word1, string word2){
         last = word1;
     }
    
-    if (searchBST(first)->word != first || searchBST(last)->word != last){
+    if (searchBST(first)->data->word != first || searchBST(last)->data->word != last){
         cout << "One of the provided words is not in the bst \n";
     } else {
         //do it recursively
@@ -216,13 +222,13 @@ void BST::findAlphaRange(string word1, string word2){
 void BST::printAplhaRangeHelper(BSTNode *node, string first, string last) {
     if (node != nullptr) {
         // if the current node is in range, recurse
-        if (node->word >= first && node->word <= last) {
+        if (node->data->word >= first && node->data->word <= last) {
             printAplhaRangeHelper(node->leftChild, first, last);
-            cout << node->word << ", ";
+            cout << node->data->word << ", ";
             printAplhaRangeHelper(node->rightChild, first, last);
-        } else if (node->word < first) {  // if the node is small go right
+        } else if (node->data->word < first) {  // if the node is small go right
             printAplhaRangeHelper(node->rightChild, first, last);
-        } else if (node->word > last) {
+        } else if (node->data->word > last) {
             printAplhaRangeHelper(node->leftChild, first, last);
         }
     } 
@@ -252,7 +258,7 @@ void BST::prettyPrint(){
     Queue Q;
     Q.enQueue(root);
     // vector<string> v;
-
+    cout << "[ ! ] How to read-> word:depthColorCount[LeftChild<|>RightChild^Parent]" << endl;
     int prevDeep = 0;
     while (!Q.isEmpty()){
         BSTNode *tmp = Q.deQueue();
@@ -263,11 +269,30 @@ void BST::prettyPrint(){
             cout << (myDeep != 0? " , " :"");
         }
         prevDeep = myDeep;
-        cout << tmp->word << ":" << myDeep << (tmp->color == "red"? "R":"B") << tmp->count << "[" << tmp->leftChild->word << "<|>" << tmp->rightChild->word << "^" << (tmp->parent?tmp->parent->word:"NULL") << "]";
-        if (tmp->leftChild->word != ""){
+
+        // build the output string
+        string outString = "";
+        //cout << tmp->data->word << ":" << myDeep << (tmp->color == "red"? "R":"B") << tmp->data->count << "[" << tmp->leftChild->data->word << "<|>" << tmp->rightChild->data->word << "^" << (tmp->parent?tmp->parent->data->word:"NULL") << "]";
+        outString += (tmp->data?tmp->data->word:"NullNode");
+        outString += ":" + to_string(myDeep) + (tmp->color == "red"? "R":"B");
+        outString += to_string(tmp->data?tmp->data->count:0);
+        outString += "[";
+        outString += (tmp->leftChild->data? tmp->leftChild->data->word:"-");
+        outString += "<|>";
+        outString += (tmp->rightChild->data?tmp->rightChild->data->word:"-");
+        outString += "^";
+        outString += (tmp->parent?tmp->parent->data->word:"-");
+        outString += "]";
+
+        //finish building output string
+        cout << outString;
+
+
+        
+        if (tmp->leftChild->data != nullptr){
             Q.enQueue(tmp->leftChild);
         }
-        if (tmp->rightChild->word != ""){
+        if (tmp->rightChild->data != nullptr){
             Q.enQueue(tmp->rightChild);
         }
         // if (std::count(v.begin(), v.end(), tmp->word)){
@@ -279,4 +304,35 @@ void BST::prettyPrint(){
         // }
     }
     cout << endl;
+}
+
+//emptys scannerStack and sets up for new run
+void BST::scannerReset(){
+    while (!scanner.empty()){
+        scanner.pop();
+    }
+    BSTNode *tmp = root;
+    while (tmp->data != nullptr){
+        scanner.push(tmp);
+        tmp = tmp->leftChild;
+    }
+}
+node* BST::scannerNext(){ //On pre goes down left, Mid does self, post goes right
+    if (scanner.empty()){
+        return nullptr;
+    }
+
+    // when we remove a value, add it's right then left's
+    node *toRet = scanner.top()->data;
+    
+
+    //right value
+    BSTNode *toAdd = scanner.top()->rightChild;
+    scanner.pop();
+    while (toAdd->data != nullptr){
+        scanner.push(toAdd);
+        toAdd = toAdd->leftChild;
+    }
+
+    return toRet;
 }

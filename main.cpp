@@ -19,12 +19,10 @@ int main(int argc, char* argv[]){
     cout << "building datasets" << endl;
     
     BST *rbBST = new BST();
-    BST *bBST = new BST();
+    //BST *bBST = new BST();
     vector<string> words;
-    int lines = 206;
     string tmp;
     while(getline(inFile, tmp)){// && lines > 0){
-        lines--;
         stringstream ss(tmp);
         tmp = "";
         ss >> tmp;
@@ -35,6 +33,20 @@ int main(int argc, char* argv[]){
         }
         
     }
+    
+    for (string tmp : words){
+        rbBST->rbInsert(tmp);
+    }
+
+    rbBST->prettyPrint();
+    // rbBST->scannerReset();
+    // BSTNode *node = rbBST->scannerNext();
+    // while(node != nullptr){
+    //     cout << node->data->word << "[" << node->data->count << "]" << endl;
+    //     node = rbBST->scannerNext();
+    // }
+    
+    /*
     std::chrono::_V2::system_clock::time_point startTime, stopTime;
     cout << "Datasize: " << words.size() << endl;
 
@@ -70,4 +82,5 @@ int main(int argc, char* argv[]){
     }
     stopTime = chrono::high_resolution_clock::now();
     cout << "MiliSeconds to access every bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
+    */
 }

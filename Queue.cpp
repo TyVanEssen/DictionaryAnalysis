@@ -26,7 +26,7 @@ BSTNode* Queue::deQueue(){
 void Queue::printQueue(){
     qNode *tmp = head;
     while(tmp != nullptr){
-        cout << tmp->node->word;
+        cout << tmp->node->data->word;
         tmp = tmp->next;
     }
 }

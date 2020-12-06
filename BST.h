@@ -2,19 +2,24 @@
 #define BST_H
 
 #include <iostream>
+#include <stack>
+
+struct node {
+    std::string word;
+    int count;
+};
 
 struct BSTNode{
-    std::string word;
+    node *data;
     std::string color;
-    int count;
+    
     BSTNode* parent;
     BSTNode* leftChild;
     BSTNode* rightChild;
     
     BSTNode(std::string in_word, BSTNode *p, BSTNode *lc, BSTNode *rc)
     {
-        word = in_word;
-        count = 0;
+        data = (in_word != ""? new node{in_word, 0}: nullptr);
         parent = p;
         leftChild = lc;
         rightChild = rc;
@@ -28,8 +33,8 @@ class BST
     
 public:
     BST();
-    void insert(std::string word);
-    BSTNode* bstAdd(std::string word);
+    node* rbInsert(std::string word);
+    node* bstInsert(std::string word);
     
     void findAlphaRange(std::string word1, std::string word2);
     
@@ -42,9 +47,14 @@ public:
 
     void touchNode(std::string word);
     void prettyPrint();
+
+    void scannerReset();
+    node* scannerNext();
+
 protected:
     
 private:
+    BSTNode* bstAdd(std::string word);
     void leftRotate(BSTNode *node);
     void rightRotate(BSTNode *node);
     void printIOBST(BSTNode * node);
@@ -52,6 +62,8 @@ private:
     int getDepth(BSTNode *node);
     
     BSTNode* searchBST(std::string word); //use this function to find pointer to node in BST
+
+    std::stack<BSTNode*> scanner;
     BSTNode* root;
     int totalWords;
     int totalUnique;

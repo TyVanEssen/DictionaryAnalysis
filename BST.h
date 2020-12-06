@@ -28,9 +28,7 @@ struct BSTNode{
 };
 
 
-class BST
-{
-    
+class BST {
 public:
     BST();
     node* rbInsert(std::string word);

@@ -9,5 +9,3 @@ std::string toLower(std::string* input){
     *input = s;
     return s;
 }
-
-

@@ -15,11 +15,61 @@ BST::BST(){
     totalUnique = 0;
 }
 
-node* BST::bstInsert(string word, int count){
-    return bstAdd(word, count)->data;
+node* BST::rbInsert(std::string word){
+    return rbInsert(word, 1);
+}
+node* BST::rbInsert(std::string word, int count){
+    BSTNode *workingNode = bstAdd(word, count); //regular bst insert
+    if (workingNode == nullptr){
+        return nullptr;
+    }
+    node *toRet = workingNode->data;
+    //cout << endl << "Node: " << word;
+    while (workingNode != root && workingNode->parent->color == "red"){
+        if (workingNode->parent == workingNode->parent->parent->leftChild){
+            // cout << word << " - left" << endl;
+            BSTNode *uncle = workingNode->parent->parent->rightChild;
+            if (uncle->color == "red"){
+                workingNode->parent->color = "black";
+                uncle->color = "black";
+                workingNode->parent->parent->color = "red";
+                workingNode = workingNode->parent->parent;
+            } else {
+                if (workingNode == workingNode->parent->rightChild){ //if we are a right child.. Make us a left child and do again
+                    workingNode = workingNode->parent;
+                    leftRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                rightRotate(workingNode->parent->parent);
+            }
+        } else { //we are a right child
+            // cout << word << " - right" << endl;
+            BSTNode *uncle = workingNode->parent->parent->leftChild;
+            if (uncle->color == "red"){
+                workingNode->parent->color = "black";
+                uncle->color = "black";
+                workingNode->parent->parent->color = "red";
+                workingNode = workingNode->parent->parent;
+            } else {
+                if (workingNode == workingNode->parent->leftChild){ //if we are a left child.. Make us a left child and do again
+                    workingNode = workingNode->parent;
+                    rightRotate(workingNode);
+                }
+                workingNode->parent->color = "black";
+                workingNode->parent->parent->color = "red";
+                leftRotate(workingNode->parent->parent);
+            }
+        }
+    }
+    root->color = "black";
+    return toRet;
 }
 node* BST::bstInsert(string word){
     return bstAdd(word, 1)->data;
+}
+node* BST::bstInsert(string word, int count){
+    return bstAdd(word, count)->data;
 }
 
 /*
@@ -156,56 +206,6 @@ void BST::rightRotate(BSTNode *node){
     node->parent = tmp;
 }
 
-node* BST::rbInsert(std::string word){
-    return rbInsert(word, 1);
-}
-node* BST::rbInsert(std::string word, int count){
-    BSTNode *workingNode = bstAdd(word, count); //regular bst insert
-    if (workingNode == nullptr){
-        return nullptr;
-    }
-    node *toRet = workingNode->data;
-    //cout << endl << "Node: " << word;
-    while (workingNode != root && workingNode->parent->color == "red"){
-        if (workingNode->parent == workingNode->parent->parent->leftChild){
-            // cout << word << " - left" << endl;
-            BSTNode *uncle = workingNode->parent->parent->rightChild;
-            if (uncle->color == "red"){
-                workingNode->parent->color = "black";
-                uncle->color = "black";
-                workingNode->parent->parent->color = "red";
-                workingNode = workingNode->parent->parent;
-            } else {
-                if (workingNode == workingNode->parent->rightChild){ //if we are a right child.. Make us a left child and do again
-                    workingNode = workingNode->parent;
-                    leftRotate(workingNode);
-                }
-                workingNode->parent->color = "black";
-                workingNode->parent->parent->color = "red";
-                rightRotate(workingNode->parent->parent);
-            }
-        } else { //we are a right child
-            // cout << word << " - right" << endl;
-            BSTNode *uncle = workingNode->parent->parent->leftChild;
-            if (uncle->color == "red"){
-                workingNode->parent->color = "black";
-                uncle->color = "black";
-                workingNode->parent->parent->color = "red";
-                workingNode = workingNode->parent->parent;
-            } else {
-                if (workingNode == workingNode->parent->leftChild){ //if we are a left child.. Make us a left child and do again
-                    workingNode = workingNode->parent;
-                    rightRotate(workingNode);
-                }
-                workingNode->parent->color = "black";
-                workingNode->parent->parent->color = "red";
-                leftRotate(workingNode->parent->parent);
-            }
-        }
-    }
-    root->color = "black";
-    return toRet;
-}
 void BST::findAlphaRange(string word1, string word2){
     //fix any ordering
     string first, last;
@@ -251,9 +251,8 @@ int BST::getDepth(BSTNode *node){
 int BST::getDepth(string word){
     return getDepth(searchBST(word));
 }
-/*
-To test speed of retrivalf
-*/
+
+// To test speed of retrival
 void BST::touchNode(std::string word){
     searchBST(word);
 }
@@ -299,13 +298,6 @@ void BST::prettyPrint(){
         if (tmp->rightChild->data != nullptr){
             Q.enQueue(tmp->rightChild);
         }
-        // if (std::count(v.begin(), v.end(), tmp->word)){
-        //     cout << endl << endl;
-        //     cout << "ENDING EARLY 2x " << tmp->word << endl;
-        //     exit(1);
-        // } else {
-        //     v.push_back(tmp->word);
-        // }
     }
     cout << endl;
 }

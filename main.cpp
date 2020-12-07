@@ -237,12 +237,3 @@ int main(int argc, char* argv[]){
         
     }
 }
-/*
-    rbBST->scannerReset();
-    node *data = rbBST->scannerNext();
-    while(data != nullptr){
-        cout << data->word << "[" << data->count << "]" << endl;
-        data = rbBST->scannerNext();
-    }
-*/
-

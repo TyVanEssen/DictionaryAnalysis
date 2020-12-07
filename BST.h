@@ -11,12 +11,15 @@ public:
     BST();
     node* rbInsert(std::string word);
     node* bstInsert(std::string word);
-    
+    node* rbInsert(std::string word, int count);
+    node* bstInsert(std::string word, int count);
+
     void findAlphaRange(std::string word1, std::string word2);
     
     int countBSTNodes();
     int countTotalWords();
     int getDepth(std::string word);
+    node** mostFrequent(int topX);
 
     void printInOrderBST();
     void printWord(std::string word);
@@ -30,7 +33,7 @@ public:
 protected:
     
 private:
-    BSTNode* bstAdd(std::string word);
+    BSTNode* bstAdd(std::string word, int count);
     void leftRotate(BSTNode *node);
     void rightRotate(BSTNode *node);
     void printIOBST(BSTNode * node);

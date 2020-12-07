@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
     }
 
 
-    cout << "building dataset ...\n";
+    cout << "building dataset ... ";
     cout.flush();
 
     vector<string> words;
@@ -118,32 +118,60 @@ int main(int argc, char* argv[]){
             stopTime = chrono::high_resolution_clock::now();
             cout << "MiliSeconds to access every bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
 
-            cout << "If your values are 0, please use a larger dataset" << endl;
+            cout << "If your values are too small, please use a larger dataset" << endl;
             break;
         }
         case 2: //Most Common Words\n" //TODO
         {
-            int trackedWords;
-            cout << "[ ? ] How many top words?:";
-            cin >> trackedWords;
-            if (trackedWords <= 0) {
-                cout << "[ ! ] Please enter a positive number" << endl;
+            int trackedWords  = -1;
+            while (trackedWords <= 0){
+                cout << "[ ? ] How many top words?: ";
+                cin >> trackedWords;
+                if (trackedWords <= 0) {
+                    cout << "[ ! ] Please enter a positive number" << endl;
+                    cin.clear();
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
             }
+            trackedWords = (trackedWords <= rbBST->countBSTNodes()? trackedWords: rbBST->countBSTNodes());
+            node ** topWords = rbBST->mostFrequent(trackedWords);
 
-            node *topWords[trackedWords];
-
-            rbBST->scannerReset(); //TOFIX
-            node *data = rbBST->scannerNext();
-            while(data != nullptr){
-                cout << data->word << "[" << data->count << "]" << endl;
-                data = rbBST->scannerNext();
+            for (int i = 0; i < trackedWords; i++){
+                cout << "\t" << i+1 << ") " << topWords[i]->word << ":" << topWords[i]->count << endl;
             }
-
             break;
         }
         case 3: //Most Common Letter\n" //TODO
         {
             //iterate over everything then 
+            //create the new structure
+            BST *letters = new BST();
+            rbBST->scannerReset();
+            node* data = rbBST->scannerNext();
+            while (data != nullptr){
+                for (int let = 0; let < data->word.length(); let++){
+                    letters->rbInsert(string(1,data->word[let]), data->count);
+                }
+                data = rbBST->scannerNext();
+            }
+
+            //find the top X
+            int trackedLetters = -1;
+            while (trackedLetters <= 0){
+            cout << "[ ? ] How many top letters?: ";
+                cin >> trackedLetters;
+                if (trackedLetters <= 0) {
+                    cout << "[ ! ] Please enter a positive number" << endl;
+                    cin.clear();
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+            }
+            trackedLetters = (trackedLetters <= rbBST->countBSTNodes()? trackedLetters: rbBST->countBSTNodes());
+            node** topLetters = letters->mostFrequent(trackedLetters);
+
+            for (int i = 0; i < trackedLetters; i++){
+                cout << "\t" << i+1 << ") " << topLetters[i]->word << ":" << topLetters[i]->count << endl;
+            }
             break;
         }
         case 4: //Find Words Between\n"

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "util.h"
 
 std::string toLower(std::string* input){
     std::string s;
@@ -8,3 +9,5 @@ std::string toLower(std::string* input){
     *input = s;
     return s;
 }
+
+

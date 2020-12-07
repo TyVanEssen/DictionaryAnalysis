@@ -1,4 +1,5 @@
 #include <iostream>
+#include "BST.h"
 
 #ifndef UTIL_H
 #define UTIL_H
@@ -27,6 +28,7 @@ struct BSTNode{
 };
 
 std::string toLower(std::string* input);
+
 
 
 #endif

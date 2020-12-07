@@ -7,7 +7,6 @@ Ty VanEssen 20-10-2020
 #include "BST.h"
 #include <vector>
 #include <algorithm>
-#include <stack>
 using namespace std;
 
 BST::BST(){
@@ -16,24 +15,27 @@ BST::BST(){
     totalUnique = 0;
 }
 
+node* BST::bstInsert(string word, int count){
+    return bstAdd(word, count)->data;
+}
 node* BST::bstInsert(string word){
-    return bstAdd(word)->data;
+    return bstAdd(word, 1)->data;
 }
 
 /*
     Returns a pointer to the value added or nullPtr if the value was already found and only needed updating
 */
-BSTNode* BST::bstAdd(string word){ //iteratively
+BSTNode* BST::bstAdd(string word, int count){ //iteratively
     totalWords++;
     BSTNode *result = searchBST(word); // returns the node we need. 
     //returns null if the list is empty
     BSTNode *toReturn = nullptr;
     if (result->data && result->data->word == word){
-        result->data->count += 1;
+        result->data->count += count;
         //dont update to ret since it's at its no change value by default
     } else {
         //no need to set root since (after the constructor runs) it should already be this empty node
-        result->data = new node{word, 1};
+        result->data = new node{word, count};
         result->color = "red";
         //make new nullnodes
         BSTNode *leftNullNode = new BSTNode{"", result, nullptr, nullptr};
@@ -155,7 +157,10 @@ void BST::rightRotate(BSTNode *node){
 }
 
 node* BST::rbInsert(std::string word){
-    BSTNode *workingNode = bstAdd(word); //regular bst insert
+    return rbInsert(word, 1);
+}
+node* BST::rbInsert(std::string word, int count){
+    BSTNode *workingNode = bstAdd(word, count); //regular bst insert
     if (workingNode == nullptr){
         return nullptr;
     }
@@ -334,4 +339,32 @@ node* BST::scannerNext(){ //On pre goes down left, Mid does self, post goes righ
     }
 
     return toRet;
+}
+
+// Outputs an array of pointers to the topX items in said tree.
+node** BST::mostFrequent(int topX){
+    node **topWords = new node*[topX];
+    for (int i = 0; i < topX; i++){
+        topWords[i] = nullptr;
+    }
+
+    scannerReset();
+    node *data = scannerNext();
+    while(data != nullptr){
+        for (int i = 0; i<topX; i++){
+            if (topWords[i] == nullptr){ //if it is empty. We found the spot
+                topWords[i] = data;
+                break;
+            } else if (data->count > topWords[i]->count){
+                for (int shifter = topX-1; shifter > i; shifter--){
+                    topWords[shifter] = topWords[shifter - 1];
+                }
+                topWords[i] = data;
+                break;
+            }
+        }
+        data = scannerNext();
+    }
+
+    return topWords;
 }

@@ -3,8 +3,8 @@ Implementation for BSH.h
 Ty VanEssen 20-10-2020
 */
 #include <iostream>
-#include "BST.h"
 #include "Queue.h"
+#include "BST.h"
 #include <vector>
 #include <algorithm>
 #include <stack>
@@ -13,6 +13,7 @@ using namespace std;
 BST::BST(){
     root = new BSTNode{"", nullptr, nullptr, nullptr}; //root is a nullNode
     totalWords = 0;
+    totalUnique = 0;
 }
 
 node* BST::bstInsert(string word){
@@ -210,17 +211,15 @@ void BST::findAlphaRange(string word1, string word2){
         first = word2;
         last = word1;
     }
-   
-    if (searchBST(first)->data->word != first || searchBST(last)->data->word != last){
+    if (!searchBST(first)->data || !searchBST(last)->data){
         cout << "One of the provided words is not in the bst \n";
     } else {
         //do it recursively
         printAplhaRangeHelper(root, first, last);
     }
-    cout << endl;
 }
 void BST::printAplhaRangeHelper(BSTNode *node, string first, string last) {
-    if (node != nullptr) {
+    if (node != nullptr && node->data != nullptr) {
         // if the current node is in range, recurse
         if (node->data->word >= first && node->data->word <= last) {
             printAplhaRangeHelper(node->leftChild, first, last);

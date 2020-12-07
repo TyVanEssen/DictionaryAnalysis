@@ -7,6 +7,7 @@
 #include "BST.h"
 using namespace std;
 
+
 int main(int argc, char* argv[]){
     
     if (argc != 2 && argc != 3) {
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]){
     }
 
 
-    cout << "building datasets ...\n";
+    cout << "building dataset ...\n";
     cout.flush();
 
     vector<string> words;
@@ -43,19 +44,26 @@ int main(int argc, char* argv[]){
         std::vector<std::string> tokens{first, last};
         for (auto t : tokens) {
             if (t.length() > 0) {
-                string s;
-                for (char c : t){
-                    s += tolower(c);
-                }
+                string s = toLower(&t);
                 words.push_back(s);
             }
         }
         lines--;
     }
     cout << "Done, Datasize: " << words.size() << endl;
-    
+    std::chrono::_V2::system_clock::time_point startTime, stopTime;
+
+
+    BST *rbBST = new BST();
+    startTime = chrono::high_resolution_clock::now();
+    for (string tmp : words){
+        rbBST->rbInsert(tmp);
+    }
+    stopTime = chrono::high_resolution_clock::now();
+    cout << "MiliSeconds to build rb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
+
     string menu =
-        "[ ! ] These are your options:\n"
+        "\n[ - ] These are your options:\n"
         "\t-1: Exit\n"
         "\t1: Speed Comparison between unOptimized & Optimized Data Structures (Will take some time)\n"
         "\t2: Most Common Words\n"
@@ -63,8 +71,8 @@ int main(int argc, char* argv[]){
         "\t4: Find Words Between\n"
         "\t5: Total Words\n"
         "\t6: Unique Words\n"
-        "\t7: Print it Pretty\n"
-        "\t8: Print it Ugly\n"
+        "\t7: Print it Detailed\n"
+        "\t8: Print it Basic\n"
         "\t9: Get Depth of Node\n"
         "\t10: Print Node\n"        
     ;
@@ -78,104 +86,134 @@ int main(int argc, char* argv[]){
         {
         case -1: //Exit\n"
         {
+            return(0);
             break;
         }
         case 1: //Speed Comparison between unOptimized & Optimized Data Structures (Will take some time)\n"
+        {
+            BST *bBST = new BST();
+            
+            startTime = chrono::high_resolution_clock::now();
+            for (string tmp : words){
+                bBST->bstInsert(tmp);
+            }
+            stopTime = chrono::high_resolution_clock::now();
+            cout << "MiliSeconds to build bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
+            
+            // rbBST->prettyPrint();
+            cout << "done building datasets" << endl;    
 
-        {
+            
+            startTime = chrono::high_resolution_clock::now();
+            for (string word : words){
+                rbBST->touchNode(word);
+            }
+            stopTime = chrono::high_resolution_clock::now();
+            cout << "MiliSeconds to access every rb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
+
+            startTime = chrono::high_resolution_clock::now();
+            for (string word : words){
+                bBST->touchNode(word);
+            }
+            stopTime = chrono::high_resolution_clock::now();
+            cout << "MiliSeconds to access every bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
+
+            cout << "If your values are 0, please use a larger dataset" << endl;
             break;
         }
-        case 2: //Most Common Words\n"
+        case 2: //Most Common Words\n" //TODO
         {
+            int trackedWords;
+            cout << "[ ? ] How many top words?:";
+            cin >> trackedWords;
+            if (trackedWords <= 0) {
+                cout << "[ ! ] Please enter a positive number" << endl;
+            }
+
+            node *topWords[trackedWords];
+
+            rbBST->scannerReset(); //TOFIX
+            node *data = rbBST->scannerNext();
+            while(data != nullptr){
+                cout << data->word << "[" << data->count << "]" << endl;
+                data = rbBST->scannerNext();
+            }
+
             break;
         }
-        case 3: //Most Common Letter\n"
+        case 3: //Most Common Letter\n" //TODO
         {
+            //iterate over everything then 
             break;
         }
         case 4: //Find Words Between\n"
         {
+            string first, second;
+            cout << "[ ? ] Between what two words?:\n[ ? ] Word 1: ";
+            cin >> first;
+            cout << "[ ? ] Word 2: ";
+            cin >> second;
+            toLower(&first);
+            toLower(&second);
+            rbBST->findAlphaRange(first, second);
             break;
         }
         case 5: //Total Words\n"
         {
+            cout << "[ - ] There are " << rbBST->countTotalWords() << " sequences recognized as words in the file." << endl;
             break;
         }
         case 6: //Unique Words\n"
         {
+            cout << "[ - ] There are " << rbBST->countBSTNodes() << " unique sequences recognized as words in the file." << endl;
             break;
         }
-        case 7: //Print it Pretty\n"
+        case 7: //Print it Detailed\n"
         {
+            rbBST->prettyPrint();
             break;
         }
-        case 8: //Print it Ugly\n"
+        case 8: //Print it Basic\n"
         {
+            rbBST->printInOrderBST();
             break;
         }
         case 9: //Get Depth of Node\n"
         {
+            string nodeName;
+            cout << "[ ? ] What node?: ";
+            cin >> nodeName;
+            toLower(&nodeName);
+            cout << nodeName << " is at a depth of: " << rbBST->getDepth(nodeName) << endl;
             break;
         }
         case 10: //Print Node\n"
         {
+            string nodeName;
+            cout << "[ ? ] What node?: ";
+            cin >> nodeName;
+            toLower(&nodeName);
+            rbBST->printWord(nodeName);
             break;
         }
         default:
             break;
         }
+        
+        if (cin.fail() || (option != -1 && (option > 10 || option < 1))){
+            cout << "[ ! ] Please Enter a number in the range" << endl;
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        
     }
 }
 /*
-
-    BST *rbBST = new BST();
-    BST *bBST = new BST();
-    /*
-    for (string tmp : words){
-        rbBST->rbInsert(tmp);
-    }
-
     rbBST->scannerReset();
     node *data = rbBST->scannerNext();
     while(data != nullptr){
         cout << data->word << "[" << data->count << "]" << endl;
         data = rbBST->scannerNext();
     }
-    
-    
-    std::chrono::_V2::system_clock::time_point startTime, stopTime;
-
-    startTime = chrono::high_resolution_clock::now();
-    for (string tmp : words){
-        rbBST->rbInsert(tmp);
-    }
-    stopTime = chrono::high_resolution_clock::now();
-    cout << "MiliSeconds to build rb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
-    
-    startTime = chrono::high_resolution_clock::now();
-    for (string tmp : words){
-        bBST->bstInsert(tmp);
-    }
-    stopTime = chrono::high_resolution_clock::now();
-    cout << "MiliSeconds to build bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
-    
-    // rbBST->prettyPrint();
-    cout << "done building datasets" << endl;    
-
-
-    
-    startTime = chrono::high_resolution_clock::now();
-    for (string word : words){
-        rbBST->touchNode(word);
-    }
-    stopTime = chrono::high_resolution_clock::now();
-    cout << "MiliSeconds to access every rb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
-
-    startTime = chrono::high_resolution_clock::now();
-    for (string word : words){
-        bBST->touchNode(word);
-    }
-    stopTime = chrono::high_resolution_clock::now();
-    cout << "MiliSeconds to access every bb: " << chrono::duration_cast<chrono::milliseconds>(stopTime - startTime).count() << endl;
-}
 */
+

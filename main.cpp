@@ -91,6 +91,7 @@ int main(int argc, char* argv[]){
         }
         case 1: //Speed Comparison between unOptimized & Optimized Data Structures (Will take some time)\n"
         {
+            cout << "Begining Building the unOptimized dataStructure" << endl;
             BST *bBST = new BST();
             
             startTime = chrono::high_resolution_clock::now();

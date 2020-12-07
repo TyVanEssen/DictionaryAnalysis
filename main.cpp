@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
-
+#include <regex>
 #include <chrono>
 
 #include "BST.h"
@@ -30,19 +29,26 @@ int main(int argc, char* argv[]){
     }
 
 
-    cout << "building datasets ... ";
+    cout << "building datasets ...\n";
     cout.flush();
 
     vector<string> words;
     string tmp;
+    std::regex re(R"((\W|\s)+)");
     while(getline(inFile, tmp) && (lines != 0)){
-        stringstream ss(tmp);
-        tmp = "";
-        ss >> tmp;
-        while (tmp != "") {
-            words.push_back(tmp);
-            tmp = "";
-            ss >> tmp;
+        //aight we just gonna use regex resource: https://stackoverflow.com/questions/7621727/split-a-string-into-words-by-multiple-delimiters
+        //tested with https://regex101.com/
+
+        std::sregex_token_iterator first{tmp.begin(), tmp.end(), re, -1}, last;
+        std::vector<std::string> tokens{first, last};
+        for (auto t : tokens) {
+            if (t.length() > 0) {
+                string s;
+                for (char c : t){
+                    s += tolower(c);
+                }
+                words.push_back(s);
+            }
         }
         lines--;
     }
@@ -70,47 +76,48 @@ int main(int argc, char* argv[]){
         
         switch (option)
         {
-        case -1:
+        case -1: //Exit\n"
         {
             break;
         }
-        case 1:
+        case 1: //Speed Comparison between unOptimized & Optimized Data Structures (Will take some time)\n"
+
         {
             break;
         }
-        case 2:
+        case 2: //Most Common Words\n"
         {
             break;
         }
-        case 3:
+        case 3: //Most Common Letter\n"
         {
             break;
         }
-        case 4:
+        case 4: //Find Words Between\n"
         {
             break;
         }
-        case 5:
+        case 5: //Total Words\n"
         {
             break;
         }
-        case 6:
+        case 6: //Unique Words\n"
         {
             break;
         }
-        case 7:
+        case 7: //Print it Pretty\n"
         {
             break;
         }
-        case 8:
+        case 8: //Print it Ugly\n"
         {
             break;
         }
-        case 9:
+        case 9: //Get Depth of Node\n"
         {
             break;
         }
-        case 10:
+        case 10: //Print Node\n"
         {
             break;
         }

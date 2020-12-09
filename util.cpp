@@ -4,7 +4,11 @@
 std::string toLower(std::string* input){
     std::string s;
     for (char c : *input){
-        s += tolower(c);
+        if (isalpha(c)){
+            s += tolower(c);
+        } else {
+            s += c;
+        }
     }
     *input = s;
     return s;

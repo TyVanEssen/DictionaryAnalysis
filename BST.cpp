@@ -139,7 +139,7 @@ void BST::printIOBST(BSTNode * node) {
 
 void BST::printWord(string word){
     BSTNode *foundWord = searchBST(word);
-    if (foundWord->data->word != word) {
+    if (!foundWord->data) {
         cout << "[ ! ] Node: " << word << " not found, this would be the parent:\n";
         foundWord = foundWord->parent;
     }
@@ -249,7 +249,13 @@ int BST::getDepth(BSTNode *node){
 }
 
 int BST::getDepth(string word){
-    return getDepth(searchBST(word));
+    BSTNode *node = searchBST(word);
+    if (node->data) {
+        return getDepth(node);
+    } else {
+        return -1;
+    }
+    
 }
 
 // To test speed of retrival
@@ -260,7 +266,7 @@ void BST::touchNode(std::string word){
 void BST::prettyPrint(){
     Queue Q;
     Q.enQueue(root);
-    // vector<string> v;
+    
     cout << "[ ! ] How to read-> word:depthColorCount[LeftChild<|>RightChild^Parent]" << endl;
     int prevDeep = 0;
     while (!Q.isEmpty()){

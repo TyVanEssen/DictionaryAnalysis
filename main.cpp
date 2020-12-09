@@ -213,7 +213,8 @@ int main(int argc, char* argv[]){
             cout << "[ ? ] What node?: ";
             cin >> nodeName;
             toLower(&nodeName);
-            cout << nodeName << " is at a depth of: " << rbBST->getDepth(nodeName) << endl;
+            int depth = rbBST->getDepth(nodeName);
+            cout << nodeName << " is at a depth of: " << (depth != -1? to_string(depth): "Node Not Found") << endl;
             break;
         }
         case 10: //Print Node\n"
@@ -222,6 +223,7 @@ int main(int argc, char* argv[]){
             cout << "[ ? ] What node?: ";
             cin >> nodeName;
             toLower(&nodeName);
+            cout << "Attempting to print: " << nodeName << endl;
             rbBST->printWord(nodeName);
             break;
         }
